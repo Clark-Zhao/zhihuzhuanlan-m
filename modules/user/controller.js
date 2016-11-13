@@ -23,7 +23,7 @@ module.exports = {
     var info = req.body;
 
     UserModel.find({'username': info.username}, function (err, docs) {
-      if (!doc[0]) {
+      if (!docs[0]) {
         var token = md5(info.username + info.password + new Date().toString());
 
         var userEntity = new UserModel({
