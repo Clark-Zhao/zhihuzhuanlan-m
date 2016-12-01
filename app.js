@@ -9,8 +9,11 @@ var bodyParser = require('body-parser');
 // var users = require('./routes/users');
 
 // 路由
-var post = require('./modules/post/route')
-var user = require('./modules/user/route')
+var post = require('./modules/post/route');
+var user = require('./modules/user/route');
+var followers= require('./modules/followers/route');
+var comments= require('./modules/comments/route');
+var visitor= require('./modules/visitor/route');
 
 var app = express();
 
@@ -41,6 +44,9 @@ app.use(function (req, res, next) {
 // app.use('/users', users);
 app.use('/api', post);
 app.use('/api', user);
+app.use('/api', followers);
+app.use('/api', comments);
+app.use('/api', visitor);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

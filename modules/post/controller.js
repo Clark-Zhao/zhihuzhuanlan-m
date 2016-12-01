@@ -23,6 +23,21 @@ module.exports = {
     })
   },
 
+// 为一篇文章点赞
+  likes: function(req, res, next) {
+    PostModel.findById(req.query.id, function (err, docs) {
+      docs.likesCount++
+      docs.save()
+      res.json({
+        status: 200,
+        message: 'success',
+        data: {
+          message: '点赞成功！'
+        }
+      });
+    })
+  },
+
 // 获取文章列表
   posts: function(req, res, next) {
     PostModel.find({}, null, {sort: {'_id': -1}}, function (err, docs) {

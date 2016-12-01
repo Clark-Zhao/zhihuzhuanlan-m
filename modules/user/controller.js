@@ -44,7 +44,7 @@ module.exports = {
       } else {
         res.json({
           status: 401,
-          nessage: 'error',
+          message: 'error',
           data: {
             message: '用户名已被占用！'
           }
