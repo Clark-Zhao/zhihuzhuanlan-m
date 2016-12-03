@@ -18,7 +18,21 @@ var CommentSchema = new mongoose.Schema({
 
 var CommentModel = db.model('Comment', CommentSchema);
 
+var PostSchema = new mongoose.Schema({
+  title: String,
+  titleImg: String,
+  tags : String,
+  likesCount : Number,
+  commentsCount : Number,
+  author: String,
+  publishedTime: Date,
+  content: String
+});
+
+var PostModel = db.model('Post', PostSchema);
+
 module.exports = {
+  CommentModel,
 
 // 给评论点赞
   like: function(req, res, next) {
@@ -63,15 +77,16 @@ module.exports = {
 
     commentEntity.save()
 
+    CommentModel.find({post_id: info.post_id}, '-email -ip', {sort: {'_id': -1}}, function (err, docs1) {
+      PostModel.update({_id: info.post_id}, {$set:{commentsCount: (docs1.length + 1)}}, function(err){})
+    })
+
     res.json({
-      name: info.name,
-      avatar: info.avatar,
-      toName: info.toName,
-      toUrl: info.toUrl,
-      url: info.url,
-      content: info.content,
-      createdTime: new Date(),
-      likesCount: 0
+      status: 200,
+      message: 'success',
+      data: {
+        message: '评论成功！'
+      }
     })
   }
 }
