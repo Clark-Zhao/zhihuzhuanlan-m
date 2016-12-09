@@ -1,5 +1,4 @@
-var mongoose = require('mongoose');
-var db = mongoose.createConnection('localhost', 'blog');
+var UserModel = require('../../model/user.js');
 
 var cookieParser = require('cookie-parser');
 var express = require('express');
@@ -7,14 +6,6 @@ var app = express();
 app.use(cookieParser());
 
 var md5 = require('js-md5');
-
-var UserSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-  token: String
-});
-
-var UserModel = db.model('User', UserSchema);
 
 module.exports = {
 

@@ -1,18 +1,6 @@
 var mongoose = require('mongoose');
 var db = mongoose.createConnection('localhost', 'blog');
-
-var PostSchema = new mongoose.Schema({
-  title: String,
-  titleImg: String,
-  tags : String,
-  likesCount : Number,
-  commentsCount : Number,
-  author: String,
-  publishedTime: Date,
-  content: String
-});
-
-var PostModel = db.model('Post', PostSchema);
+var PostModel = require('../../model/post.js');
 
 module.exports = {
 
@@ -40,8 +28,19 @@ module.exports = {
 
 // 获取文章列表
   posts: function(req, res, next) {
-    PostModel.find({}, null, {sort: {'_id': -1}}, function (err, docs) {
-      res.send(docs);
+    var limit = Number(req.query.limit) || 10;
+    PostModel.find({},function(err, posts) {
+      var total = posts.length;
+
+      PostModel.find({}, null, {sort: {'_id': -1}, limit: limit, skip: (limit * (req.query.page - 1))}, function (err, docs) {
+        res.json({
+          status: 200,
+          message: 'success',
+          total: total,
+          last_page: Math.ceil(total / limit),
+          list: docs
+        });
+      })
     })
   },
 

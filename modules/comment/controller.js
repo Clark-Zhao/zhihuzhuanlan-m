@@ -1,38 +1,7 @@
-var mongoose = require('mongoose');
-var db = mongoose.createConnection('localhost', 'blog');
-
-var CommentSchema = new mongoose.Schema({
-  post_id: String,
-  name: String,
-  avatar: String,
-  toName: String,
-  toContent: String,
-  toUrl: String,
-  email: String,
-  url: String,
-  content: String,
-  createdTime: Date,
-  likesCount: Number,
-  ip: String
-});
-
-var CommentModel = db.model('Comment', CommentSchema);
-
-var PostSchema = new mongoose.Schema({
-  title: String,
-  titleImg: String,
-  tags : String,
-  likesCount : Number,
-  commentsCount : Number,
-  author: String,
-  publishedTime: Date,
-  content: String
-});
-
-var PostModel = db.model('Post', PostSchema);
+var CommentModel = require('../../model/comment.js')
+var PostModel = require('../../model/post.js')
 
 module.exports = {
-  CommentModel,
 
 // 给评论点赞
   like: function(req, res, next) {
@@ -48,6 +17,7 @@ module.exports = {
       });
     })
   },
+
 // 获取评论
   comments: function(req, res, next) {
     CommentModel.find({post_id: req.query.id}, '-email -ip', {sort: {'_id': -1}}, function (err, docs) {
