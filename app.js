@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 
 // 路由
 var post = require('./modules/post/route');
+var draft = require('./modules/draft/route');
 var user = require('./modules/user/route');
 var follower= require('./modules/follower/route');
 var comment= require('./modules/comment/route');
@@ -43,6 +44,7 @@ app.use(function (req, res, next) {
 // app.use('/', routes);
 // app.use('/users', users);
 app.use('/api', post);
+app.use('/api', draft);
 app.use('/api', user);
 app.use('/api', follower);
 app.use('/api', comment);

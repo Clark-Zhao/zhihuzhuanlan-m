@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var db = mongoose.createConnection('localhost', 'blog');
 var PostModel = require('../../model/post.js');
+var DraftModel = require('../../model/draft.js');
 
 module.exports = {
 
@@ -51,7 +52,7 @@ module.exports = {
     var postEntity = new PostModel({
       title: info.title,
       titleImg: info.titleImg,
-      tags : 'javascript',
+      tags : info.tags,
       likesCount : 0,
       commentsCount : 0,
       author: info.author,
@@ -59,6 +60,10 @@ module.exports = {
       content: info.content
     });
     console.log(postEntity);
-    postEntity.save()
+    postEntity.save().then(function() {
+      DraftModel.remove({'_id': info.id}, function (err, docs) {})
+
+      res.send('文章发布成功！')
+    });
   }
 }
