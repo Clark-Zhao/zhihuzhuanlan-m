@@ -15,6 +15,7 @@ var user = require('./modules/user/route');
 var follower= require('./modules/follower/route');
 var comment= require('./modules/comment/route');
 var visitor= require('./modules/visitor/route');
+var tag= require('./modules/tag/route');
 
 var app = express();
 
@@ -49,6 +50,7 @@ app.use('/api', user);
 app.use('/api', follower);
 app.use('/api', comment);
 app.use('/api', visitor);
+app.use('/api', tag);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -66,7 +68,7 @@ if (app.get('env') === 'development') {
     res.status(err.status || 500);
     res.send({
       status: err.status,
-      message: "用户名或密码错误！"
+      message: err.message
     });
   });
 }

@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var db = mongoose.createConnection('localhost', 'blog');
 var PostModel = require('../../model/post.js');
 var DraftModel = require('../../model/draft.js');
+var tagController = require('../tag/controller.js');
 
 module.exports = {
 
@@ -30,19 +31,36 @@ module.exports = {
 // 获取文章列表
   posts: function(req, res, next) {
     var limit = Number(req.query.limit) || 10;
-    PostModel.find({},function(err, posts) {
-      var total = posts.length;
 
-      PostModel.find({}, null, {sort: {'_id': -1}, limit: limit, skip: (limit * (req.query.page - 1))}, function (err, docs) {
-        res.json({
-          status: 200,
-          message: 'success',
-          total: total,
-          last_page: Math.ceil(total / limit),
-          list: docs
-        });
+    if (req.query.tag) {
+      PostModel.find({'tags': req.query.tag},function(err, posts) {
+        var total = posts.length;
+
+        PostModel.find({'tags': req.query.tag}, null, {sort: {'_id': -1}, limit: limit, skip: (limit * (req.query.page - 1))}, function (err, docs) {
+          res.json({
+            status: 200,
+            message: 'success',
+            total: total,
+            last_page: Math.ceil(total / limit),
+            list: docs
+          });
+        })
       })
-    })
+    } else {
+      PostModel.find({},function(err, posts) {
+        var total = posts.length;
+
+        PostModel.find({}, null, {sort: {'_id': -1}, limit: limit, skip: (limit * (req.query.page - 1))}, function (err, docs) {
+          res.json({
+            status: 200,
+            message: 'success',
+            total: total,
+            last_page: Math.ceil(total / limit),
+            list: docs
+          });
+        })
+      })
+    }
   },
 
 // 发布文章
@@ -59,7 +77,9 @@ module.exports = {
       publishedTime: new Date(),
       content: info.content
     });
-    console.log(postEntity);
+
+    tagController.createTag(req, res, next);
+
     postEntity.save().then(function() {
       DraftModel.remove({'_id': info.id}, function (err, docs) {})
 
