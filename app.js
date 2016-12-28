@@ -44,13 +44,13 @@ app.use(function (req, res, next) {
 });
 // app.use('/', routes);
 // app.use('/users', users);
-app.use('/api', post);
-app.use('/api', draft);
-app.use('/api', user);
-app.use('/api', follower);
-app.use('/api', comment);
-app.use('/api', visitor);
-app.use('/api', tag);
+app.use('/v1', post);
+app.use('/v1', draft);
+app.use('/v1', user);
+app.use('/v1', follower);
+app.use('/v1', comment);
+app.use('/v1', visitor);
+app.use('/v1', tag);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
