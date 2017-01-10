@@ -1,6 +1,8 @@
 var CommentModel = require('../../model/comment.js')
 var PostModel = require('../../model/post.js')
 
+var md5 = require('js-md5');
+
 module.exports = {
 
 // 给评论点赞
@@ -20,7 +22,12 @@ module.exports = {
 
 // 获取评论
   comments: function(req, res, next) {
-    CommentModel.find({post_id: req.query.id}, '-email -ip', {sort: {'_id': -1}}, function (err, docs) {
+    CommentModel.find({post_id: req.query.id}, '-ip', {sort: {'_id': -1}}, function (err, docs) {
+      if (docs && docs.length) {
+        for (var i = 0; i < docs.length; i++) {
+          docs[i].email = md5(docs[i].email);
+        }
+      }
       res.send(docs);
     })
   },
@@ -46,10 +53,11 @@ module.exports = {
     });
 
     commentEntity.save()
-
-    CommentModel.find({post_id: info.post_id}, '-email -ip', {sort: {'_id': -1}}, function (err, docs1) {
-      PostModel.update({_id: info.post_id}, {$set:{commentsCount: (docs1.length + 1)}}, function(err){})
-    })
+      .then(
+        CommentModel.find({post_id: info.post_id}, '-email -ip', {sort: {'_id': -1}}, function (err, docs1) {
+          PostModel.update({_id: info.post_id}, {$set:{commentsCount: (docs1.length + 1)}}, function(err){})
+        })
+      )
 
     res.json({
       status: 200,
